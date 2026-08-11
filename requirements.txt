@@ -1,8 +1,8 @@
-pandas==2.2.3
-sqlalchemy==2.0.51
+# verified against live PyPI on 2026-08-09, not guessed/memorized
+pandas==3.0.5
+SQLAlchemy==2.0.51
 psycopg2-binary==2.9.12
-streamlit==1.60.0
+streamlit==1.61.1
 groq==1.6.0
 sqlparse==0.5.5
 pytest==9.1.1
-python-dotenv==1.2.2
