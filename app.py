@@ -12,12 +12,13 @@ st.set_page_config(page_title="Incident Analytics Assistant", page_icon="📊")
 st.title("Incident Analytics Assistant")
 st.caption("Ask a question about the incident dataset in plain English.")
 
-# secrets only, never hardcoded. CHATBOT_DB_URL must be the chatbot_readonly
-# pooled connection string, NOT the same value as DATABASE_URL_POOLED used
-# for Power BI / full-access scripts elsewhere in this repo.
+# secrets only, never hardcoded. st.secrets["DATABASE_URL"] is the chatbot_readonly
+# pooled connection string per .streamlit/secrets.toml.example - the same credential
+# as .env's DATABASE_URL_POOLED, just read through Streamlit's own secrets system
+# instead of python-dotenv. Never the DATABASE_URL_DIRECT full-access role.
 try:
     GROQ_API_KEY = st.secrets["GROQ_API_KEY"]
-    CHATBOT_DB_URL = st.secrets["CHATBOT_DB_URL"]
+    CHATBOT_DB_URL = st.secrets["DATABASE_URL"]  # chatbot_readonly pooled string, see secrets.toml.example
 except KeyError as exc:
     st.error(f"Missing secret: {exc}. Set it in .streamlit/secrets.toml locally or Streamlit Cloud's secrets manager.")
     st.stop()

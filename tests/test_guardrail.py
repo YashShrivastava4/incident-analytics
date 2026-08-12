@@ -68,17 +68,17 @@ def test_empty_query_rejected():
 # Skipped unless a real chatbot_readonly connection string is provided.
 # This is the test that proves the DB-level guardrail actually holds, not just the app code.
 
-CHATBOT_DB_URL = os.environ.get("CHATBOT_DB_URL")
+DATABASE_URL_POOLED = os.environ.get("DATABASE_URL_POOLED")
 
 
 @pytest.mark.skipif(
-    not CHATBOT_DB_URL,
-    reason="CHATBOT_DB_URL not set, cannot verify chatbot_readonly permissions live",
+    not DATABASE_URL_POOLED,
+    reason="DATABASE_URL_POOLED not set, cannot verify chatbot_readonly permissions live",
 )
 def test_chatbot_readonly_cannot_write():
     import psycopg2
 
-    conn = psycopg2.connect(CHATBOT_DB_URL)
+    conn = psycopg2.connect(DATABASE_URL_POOLED)
     conn.autocommit = True
     cur = conn.cursor()
     with pytest.raises(psycopg2.errors.InsufficientPrivilege):

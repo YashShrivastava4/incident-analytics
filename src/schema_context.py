@@ -1,14 +1,10 @@
 """
 Builds the schema description injected into every Groq prompt.
 
-Introspects information_schema live instead of hardcoding the column list.
-The incidents table is documented as 23 columns but the exact final list
-isn't available in this repo's docs (notes.md / progress_report.md), so a
-hardcoded list would be guessing. This queries the real schema every time
-it's called, and is self-correcting if columns are added or renamed later.
-Semantic descriptions below cover every column named anywhere in the build
-guide; anything the live query returns that isn't in this dict just gets a
-generic fallback line instead of being silently skipped.
+Introspects information_schema live instead of hardcoding the column list,
+so it's self-correcting if a column gets added or renamed later. Anything
+the live query returns that isn't in SEMANTIC_DESCRIPTIONS below just gets
+a generic fallback line instead of being silently skipped.
 """
 import logging
 from sqlalchemy import create_engine, text
@@ -25,8 +21,8 @@ VIEW_NAMES = [
     "v_assignment_group_summary",
 ]
 
-# superset of every column the build guide ever mentions, keyed lowercase.
-# introspection below only keeps the ones that actually exist in the live DB.
+# superset of every column this project's tables/views could contain, keyed
+# lowercase. introspection below only keeps the ones actually in the live DB.
 SEMANTIC_DESCRIPTIONS = {
     "number": "unique incident identifier, e.g. INC0012345",
     "incident_state": "current lifecycle state (New, Active, Resolved, Closed, etc.)",
@@ -57,9 +53,13 @@ SEMANTIC_DESCRIPTIONS = {
     "resolution_time_hours": "resolved_at minus opened_at in hours, null if unresolved; raw calendar time, not business hours",
     "time_to_close_hours": "closed_at minus opened_at in hours, null if not closed; raw calendar time, not business hours",
     "grain": "'day' | 'week' | 'month', which time bucket a v_volume_trend row aggregates",
+    "period": "the date for this grain's bucket, e.g. a specific day/week-start/month-start",
+    "incident_count": "number of incidents in this group",
     "sla_compliance_rate": "share of incidents in the group where made_sla was true",
+    "sla_breach_rate": "share of incidents in the group where made_sla was false",
     "avg_resolution_hours": "mean resolution_time_hours for the group",
     "median_resolution_hours": "median resolution_time_hours for the group, via percentile_cont",
+    "volume_rank": "assignment group's rank by incident_count, 1 = highest volume",
 }
 
 FEW_SHOT_EXAMPLES = [
@@ -98,13 +98,9 @@ FEW_SHOT_EXAMPLES = [
     },
 ]
 
-# NOTE: v_volume_trend's date-bucket column name and v_sla_by_priority /
-# v_resolution_time's exact output column names (sla_compliance_rate,
-# avg_resolution_hours, median_resolution_hours, incident_count, period)
-# are best guesses matching the naming convention documented in notes.md,
-# not confirmed against the live views.sql. Confirm these before trusting
-# the few-shot examples above; wrong column names here will actively
-# mislead the model rather than just do nothing.
+# view output column names above (sla_compliance_rate, avg_resolution_hours,
+# median_resolution_hours, incident_count, period, grain, volume_rank) are
+# confirmed against the real sql/views.sql, not guessed.
 
 
 def _introspect_columns(engine, table_name):

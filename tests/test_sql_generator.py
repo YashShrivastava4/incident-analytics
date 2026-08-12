@@ -8,20 +8,23 @@ import os
 import re
 import sys
 import pytest
-from groq import Groq
 from sqlalchemy import create_engine, text
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 from schema_context import build_schema_context, TABLE_NAME, VIEW_NAMES  # noqa: E402
-from sql_generator import generate_sql  # noqa: E402
 from guardrail import validate_sql  # noqa: E402
 
-DATABASE_URL = os.environ.get("CHATBOT_DB_URL")
+DATABASE_URL = os.environ.get("DATABASE_URL_POOLED")
 GROQ_API_KEY = os.environ.get("GROQ_API_KEY")
+
+# importorskip, not a plain import: if groq isn't installed this skips the
+# whole module cleanly instead of crashing pytest's collection step
+Groq = pytest.importorskip("groq").Groq
+from sql_generator import generate_sql  # noqa: E402
 
 pytestmark = pytest.mark.skipif(
     not (DATABASE_URL and GROQ_API_KEY),
-    reason="CHATBOT_DB_URL and GROQ_API_KEY both required to spot-check live generation",
+    reason="DATABASE_URL_POOLED and GROQ_API_KEY both required to spot-check live generation",
 )
 
 CANNED_QUESTIONS = [

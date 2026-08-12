@@ -1,20 +1,18 @@
 """
-Validates the Phase 2 cleaning/reduction outcome directly against the live
+Validates the cleaning/reduction outcome directly against the live
 incidents table, rather than unit-testing clean_and_load.py's internal
-functions. This repo's docs (notes.md, progress_report.md) confirm the
-resulting numbers but not the function names/signatures inside
-clean_and_load.py, so testing the live table is the accurate option instead
-of guessing at an internal API. Skipped unless a DB connection is provided.
+functions - keeps this test honest about the real data instead of the
+function signatures. Skipped unless a DB connection is provided.
 """
 import os
 import pytest
 from sqlalchemy import create_engine, text
 
-DATABASE_URL = os.environ.get("DATABASE_URL_POOLED") or os.environ.get("CHATBOT_DB_URL")
+DATABASE_URL = os.environ.get("DATABASE_URL_POOLED")
 
 pytestmark = pytest.mark.skipif(
     not DATABASE_URL,
-    reason="DATABASE_URL_POOLED or CHATBOT_DB_URL not set, cannot check the live table",
+    reason="DATABASE_URL_POOLED not set, cannot check the live table",
 )
 
 
