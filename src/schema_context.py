@@ -164,3 +164,26 @@ def build_schema_context(database_url: str) -> str:
         "EXAMPLES:\n"
         f"{examples_block}"
     )
+
+
+def get_data_dictionary(database_url: str) -> dict:
+    """
+    Same live introspection as build_schema_context, reshaped for display
+    instead of for a prompt. Returns an ordered dict of
+    {table_or_view_name: [(column, type, description), ...]} for the Data
+    Dictionary page.
+    """
+    engine = create_engine(database_url)
+    dictionary = {}
+
+    for name in [TABLE_NAME] + VIEW_NAMES:
+        columns = _introspect_columns(engine, name)
+        if not columns:
+            logger.warning("no columns found for '%s', check connection/permissions", name)
+            continue
+        dictionary[name] = [
+            (col, dtype, SEMANTIC_DESCRIPTIONS.get(col.lower(), "no description on file"))
+            for col, dtype in columns
+        ]
+
+    return dictionary

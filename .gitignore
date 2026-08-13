@@ -22,3 +22,15 @@ env/
 # Power BI temp files
 powerbi/*.pbix.bak
 ~$*.pbix
+
+# Data files — the deployed app and Power BI both read from Neon at runtime,
+# not from these local files, so they don't need to travel with the repo.
+# .gitkeep keeps the folder structure visible; everything else in it is
+# reproducible from the dataset link + row counts documented in README.md.
+data/raw/*
+data/processed/*
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+
+# pytest cache
+.pytest_cache/

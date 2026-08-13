@@ -1,0 +1,11 @@
+# Native Streamlit theming, not CSS overrides — this survives Streamlit
+# version upgrades in a way that hand-written CSS targeting internal DOM
+# classes doesn't. app.py adds a small amount of extra CSS on top of this
+# for things the theme API doesn't cover (card spacing, nav pill sizing).
+[theme]
+base = "dark"
+primaryColor = "#7C6CF0"
+backgroundColor = "#0B0E1A"
+secondaryBackgroundColor = "#141826"
+textColor = "#E7E9F5"
+font = "sans-serif"
