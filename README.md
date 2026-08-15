@@ -324,4 +324,4 @@ itself is licensed separately under CC BY 4.0 by its original authors, cited abo
 I'm Yash Shrivastava, a final-year Electronics & Telecommunication Engineering student building
 toward a data analyst role. This is one of three projects in my portfolio.
 
-[LinkedIn](https://www.linkedin.com/in/yash-shrivastava-a84465246/) · [GitHub](https://github.com/YashShrivastava4) · [Email](mailto:yash.shrivastava494@gmail.com)
+[LinkedIn](https://www.linkedin.com/in/yash-shrivastava-a84465246/) · [GitHub](https://github.com/YashShrivastava4) · [yash.shrivastava494@gmail.com](mailto:yash.shrivastava494@gmail.com)
