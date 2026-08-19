@@ -53,11 +53,9 @@ A few choices worth explaining:
 ```mermaid
 flowchart LR
     U["You"] -->|"asks a question"| S["Streamlit App"]
-    S -->|"question + schema"| G["Groq (LLM)"]
-    G -->|"generated SQL"| S
-    S -->|"validated, read-only query"| N["Neon Postgres"]
-    N -->|"results"| S
-    S -->|"reads incidents table"| P["Power BI Dashboard"]
+    S <-->|"generates + runs SQL"| G["Groq (LLM)"]
+    S <-->|"validated, read-only queries"| N["Neon Postgres"]
+    P["Power BI Dashboard"] <-->|"direct connection,<br/>own credentials"| N
 ```
 
 
