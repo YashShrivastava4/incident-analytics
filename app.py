@@ -13,6 +13,7 @@ touches the guardrail.
 import pandas as pd
 import streamlit as st
 import matplotlib.pyplot as plt
+import time
 from groq import Groq
 
 from src.schema_context import build_schema_context, get_data_dictionary, FEW_SHOT_EXAMPLES
@@ -262,6 +263,18 @@ def render_ask_assistant():
     st.session_state.trigger_ask = False
 
     st.divider()
+
+    if "request_times" not in st.session_state:
+        st.session_state.request_times = []
+
+    now = time.time()
+    st.session_state.request_times = [t for t in st.session_state.request_times if now - t < 60]
+
+    if len(st.session_state.request_times) >= 7 and run_now:
+        st.warning("You're sending questions too quickly. Please wait a moment.")
+        st.stop()
+
+    st.session_state.request_times.append(now)
 
     if run_now and question:
         with st.spinner("Generating SQL, running the query, and summarizing..."):

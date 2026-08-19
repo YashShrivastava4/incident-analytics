@@ -50,6 +50,17 @@ A few choices worth explaining:
 - **Streamlit over a custom frontend.** As a one-person project, it got me to something working
   and deployable fastest, without building and hosting a separate API and UI.
 
+```mermaid
+flowchart LR
+    U["You"] -->|"asks a question"| S["Streamlit App"]
+    S -->|"question + schema"| G["Groq (LLM)"]
+    G -->|"generated SQL"| S
+    S -->|"validated, read-only query"| N["Neon Postgres"]
+    N -->|"results"| S
+    S -->|"reads incidents table"| P["Power BI Dashboard"]
+```
+
+
 ## How It Works
 
 I type a question, an LLM turns it into SQL, that SQL gets checked before it's allowed anywhere
